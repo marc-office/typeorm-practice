@@ -36,19 +36,4 @@ app.use(morgan('dev'));
 // Routes
 app.use('/auth', authRouter);
 
-// v1 routing from root index.ts  -> router folder ('/auth', '/user')
-// interface vs class
-// format on save (prettier eslint)
-// default formatter
-
-// admin api mapper class -> clone -> gen:orm 
-
-// Beanstalk ( 서버 쪽 piple line 깃헙에 머지하면 감지 -> aws로 자동 배포)
-// api design -> id type -> uuid
-
-// heroku api design guide
-
-// direotory -> starts with lower case
-// file -> starts with upper case
-
 export default app;

@@ -1,0 +1,18 @@
+{
+  "type": "mysql",
+  "host": "witi.crkq6oelnek9.ap-northeast-2.rds.amazonaws.com",
+  "port": 3306,
+  "username": "witirippler",
+  "password": "RippleWiti123!",
+  "database": "rippler",
+  "synchronize": false,
+  "logging": false,
+  "entities": ["./src/entities/**/*.ts"],
+  "migrations": ["src/migration/**/*.ts"],
+  "subscribers": ["src/subscriber/**/*.ts"],
+  "cli": {
+    "entitiesDir": "src/entity",
+    "migrationsDir": "src/migration",
+    "subscribersDir": "src/subscriber"
+  }
+}

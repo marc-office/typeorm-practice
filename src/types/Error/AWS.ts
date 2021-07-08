@@ -1,4 +1,4 @@
-import { ICommonError } from './index'
+import { ICommonError } from './Index'
 
 export const AccessDeniedExceptionError: ICommonError = {
   status: 400,

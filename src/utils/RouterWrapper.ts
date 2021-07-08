@@ -4,7 +4,7 @@ import {
   getErrorResponse,
   isICommonError,
   isTypeormError
-} from 'src/types/Error/index'
+} from '@/types/Error/Index'
 
 /**
  * 공통 에러 처리 Wrapper

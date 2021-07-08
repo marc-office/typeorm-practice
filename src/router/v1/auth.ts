@@ -1,37 +1,66 @@
 import { Router } from 'express'
 import RouterWrapper from 'src/utils/RouterWrapper'
-import * as AmazonCognitoIdentity from 'amazon-cognito-identity-js'
-import { AWSonFailure } from 'src/types/Error/index'
+import * as AwsConfig from '@/utils/AwsConfig'
+import { getCognito } from 'src/utils/Cognito'
+import { AWSonFailure } from '@/types/Error/Index'
 
 const authRouter = Router()
 
-const getCognito = (id: string, password: string) => {
-  const authenticationData = {
-    Username: id,
-    Password: password
-  }
-  const authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(
-    authenticationData
-  )
-  const poolData: {UserPoolId: string, ClientId: string} = {
-    UserPoolId: process.env.COGNITO_POOL_ID || "UserPoolId is null",
-    ClientId: process.env.COGNITO_CLIENT_ID || "ClientId is null"
-  }
-  const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData)
-  const userData = {
-    Username: id,
-    Pool: userPool
-  }
-  return {
-    cognitoUser: new AmazonCognitoIdentity.CognitoUser(userData),
-    authenticationDetails
-  }
-}
+authRouter.post(
+  '/signup',
+  RouterWrapper(async (req, res, next) => {
+    const { email, password } = req.body as unknown as {
+      email: string
+      password: string
+    }
+    AwsConfig.setCognitoAttributeList(email)
+    AwsConfig.getUserPool().signUp(
+      email,
+      password,
+      AwsConfig.getCognitoAttributeList(),
+      [],
+      function (err, result) {
+        if (err) {
+          return res.send({ statusCode: 422, response: err })
+        }
+        if (result) {
+          const response = {
+            username: result.user.getUsername(),
+            userConfirmed: result.userConfirmed
+          }
+          res.send({ statusCode: 201, response: response })
+        }
+      }
+    )
+  })
+)
+
+authRouter.post(
+  '/verify',
+  RouterWrapper(async (req, res, next) => {
+    const { email, code } = req.body as unknown as {
+      email: string
+      code: string
+    }
+    AwsConfig.getCognitoUser(email).confirmRegistration(
+      code,
+      true,
+      (err: Error, result: any) => {
+        if (err) {
+          res.send({ statusCode: 422, response: err })
+        }
+        res.send({ statusCode: 200, response: result })
+      }
+    )
+  })
+)
 
 authRouter.post(
   '/signin',
   RouterWrapper(async (req, res, next) => {
     let token = ''
+
+    console.log(req.body)
     const { id, password } = req.body as unknown as {
       id: string
       password: string
@@ -50,4 +79,4 @@ authRouter.post(
   })
 )
 
-export default authRouter;
+export default authRouter

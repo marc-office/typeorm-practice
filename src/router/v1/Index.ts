@@ -1,6 +1,9 @@
 import * as express from 'express'
 
 import auth from './Auth'
+import answer from './Answer'
+import question from './Question'
+
 import { getConnection } from '@/utils/Database'
 import { validateToken } from '@/utils/VerifyToken'
 import RouterWrapper from '@/utils/RouterWrapper'
@@ -25,5 +28,7 @@ router.use(
 )
 
 router.use('/auth', auth)
+router.use('/answer', answer)
+router.use('/question', question)
 
 export default router

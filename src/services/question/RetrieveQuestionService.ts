@@ -2,18 +2,17 @@ import { Questions } from '@/entities/Questions'
 import { Users } from '@/entities/Users'
 import { getRepository } from 'typeorm'
 
-interface Request {
-  userId?: string
-  questionObj: Questions
-}
+// interface Request {
+//   userId?: string
+//   questionObj: Questions
+// }
 
 interface FormatData {
-  userId: string
   question: Questions
 }
 
 class RetrieveQuestionService {
-  async execute ({ userId, questionObj }: Request): Promise<FormatData> {
+  async execute (questionObj: Questions): Promise<FormatData> {
     const userRepository = getRepository(Users)
     const questionRepository = getRepository(Questions)
 
@@ -34,7 +33,6 @@ class RetrieveQuestionService {
     }
 
     return {
-      userId,
       question
     }
   }

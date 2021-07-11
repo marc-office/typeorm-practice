@@ -4,22 +4,26 @@ import { getRepository } from 'typeorm'
 
 interface Request {
   userId: string
-  questionId: string
+  id: string
 }
 
-class DeleteProductService {
-  async execute ({ userId, questionId }: Request): Promise<void> {
+class DeleteQuestionService {
+  async execute ({ userId, id }: Request): Promise<void> {
     const userRepository = getRepository(Users)
     const questionsRepository = getRepository(Questions)
 
     const user = await userRepository.findOne(userId)
     const question = await questionsRepository.findOne({
       user: user,
-      id: questionId
+      id: id
     })
 
     if (!user) {
       throw new Error('아이디에 해당하는 유저가 없습니다.')
+    }
+
+    if (user.id !== question.user.id) {
+      throw new Error('자신의 질문 이외에는 삭제할 수 없습니다')
     }
 
     if (!question) {
@@ -27,8 +31,11 @@ class DeleteProductService {
       // 추후 에러 케이스 구분할 예정
     }
 
-    await questionsRepository.delete(questionId)
+    const result = await questionsRepository.remove(question)
+    if (result.id !== undefined) {
+      throw new Error('엔티티가 성공적으로 삭제되지 못했습니다.')
+    }
   }
 }
 
-export default DeleteProductService
+export default DeleteQuestionService

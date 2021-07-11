@@ -5,3 +5,5 @@
  */
 export const toSnake = (string: string) =>
   string.replace(/[A-Z]/g, (letter: string) => `_${letter.toLowerCase()}`)
+
+export const questionSize = 3

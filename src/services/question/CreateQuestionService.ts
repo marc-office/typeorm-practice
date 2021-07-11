@@ -1,11 +1,9 @@
-import { Answers } from '@/entities/Answers'
 import { Questions } from '@/entities/Questions'
 import { Users } from '@/entities/Users'
 import { getRepository } from 'typeorm'
 
 interface Request {
   userId: string
-  answers: Answers
   content: string
 }
 
@@ -15,7 +13,7 @@ interface FormatData {
 }
 
 class CreateQuestionService {
-  async execute ({ userId, answers, content }: Request): Promise<FormatData> {
+  async execute ({ userId, content }: Request): Promise<FormatData> {
     const questionsRepository = getRepository(Questions)
     const userRepository = getRepository(Users)
 
@@ -27,7 +25,6 @@ class CreateQuestionService {
 
     const question = questionsRepository.create({
       user: user,
-      answers: answers,
       content: content
     })
 

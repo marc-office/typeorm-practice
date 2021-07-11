@@ -1,18 +1,13 @@
 import { Questions } from '@/entities/Questions'
 import { getRepository } from 'typeorm'
 
-interface Request {
-  questionsLength?: number
-  id?: string
-}
-
 interface FormatData {
   questions: Questions[]
   questionsLength: number
 }
 
-class ListAllProductsService {
-  async execute ({ questionsLength, id }: Request): Promise<FormatData> {
+class ListQuestionsService {
+  async execute (questionsLength: number): Promise<FormatData> {
     const questionRepository = getRepository(Questions)
 
     const questions = await questionRepository.find()
@@ -26,4 +21,4 @@ class ListAllProductsService {
   }
 }
 
-export default ListAllProductsService
+export default ListQuestionsService

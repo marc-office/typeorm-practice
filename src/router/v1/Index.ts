@@ -13,14 +13,16 @@ const router = express.Router()
 
 router.use(
   RouterWrapper(async (req, res, next) => {
+    // if (!req.path.startsWith('/auth')) {
+    //   const token = req.headers.authorization
+    //   if (!token) throw TokenNotExistsError
+
+    //   const verify = await validateToken(token)
+    //   if (verify === false) throw JWTInvalidError
+
+    //   await getConnection()
+    // }
     if (!req.path.startsWith('/auth')) {
-      const token = req.headers.token.toString()
-      if (!token) throw TokenNotExistsError
-
-      const verify = await validateToken(token)
-      if (verify === false) throw JWTInvalidError
-
-      if (Array.isArray(verify)) global.groups = verify
       await getConnection()
     }
     return next()
@@ -28,7 +30,7 @@ router.use(
 )
 
 router.use('/auth', auth)
-router.use('/answer', answer)
-router.use('/question', question)
+router.use('/answers', answer)
+router.use('/questions', question)
 
 export default router

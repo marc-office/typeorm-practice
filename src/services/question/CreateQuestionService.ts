@@ -1,5 +1,4 @@
 import { Questions } from '@/entities/Questions'
-import { Users } from '@/entities/Users'
 import { getRepository } from 'typeorm'
 
 interface Request {
@@ -8,33 +7,24 @@ interface Request {
 }
 
 interface FormatData {
-  user: Users
+  userId: string
   question: Questions
 }
 
-class CreateQuestionService {
-  async execute ({ userId, content }: Request): Promise<FormatData> {
-    const questionsRepository = getRepository(Questions)
-    const userRepository = getRepository(Users)
-
-    const user = await userRepository.findOne(userId)
-
-    if (!user) {
-      throw new Error('로그인 후에 질문을 올릴 수 있어요')
-    }
-
-    const question = questionsRepository.create({
-      user: user,
-      content: content
-    })
-
-    await questionsRepository.save(question)
-
-    return {
-      user,
-      question
-    }
+const createQuestion = async ({
+  userId,
+  content
+}: Request): Promise<FormatData> => {
+  const questionsRepository = getRepository(Questions)
+  const question = questionsRepository.create({
+    userId: userId,
+    content: content
+  })
+  await questionsRepository.save(question)
+  return {
+    userId,
+    question
   }
 }
 
-export default CreateQuestionService
+export default createQuestion

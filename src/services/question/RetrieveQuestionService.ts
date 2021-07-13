@@ -1,5 +1,5 @@
 import { Questions } from '@/entities/Questions'
-import { Users } from '@/entities/Users'
+import { APINotFoundError, NoDataError } from '@/types/Error/Common'
 import { getRepository } from 'typeorm'
 
 // interface Request {
@@ -8,34 +8,22 @@ import { getRepository } from 'typeorm'
 // }
 
 interface FormatData {
-  question: Questions
+  id: string
+  userId: string
+  content: string
 }
 
-class RetrieveQuestionService {
-  async execute (questionObj: Questions): Promise<FormatData> {
-    const userRepository = getRepository(Users)
-    const questionRepository = getRepository(Questions)
-
-    const question = await questionRepository.findOne(questionObj.id)
-
-    if (!question) {
-      throw new Error('해당하는 질문이 존재하지 않습니다')
-    }
-
-    const user = await userRepository.findOne({
-      where: {
-        id: questionObj.user.id
-      }
-    })
-
-    if (!user) {
-      throw new Error('탈퇴한 유저의 질문입니다.')
-    }
-
-    return {
-      question
-    }
+const retrieveQuestion = async (id: string): Promise<Questions> => {
+  const questionRepository = getRepository(Questions)
+  const findQuestion = await questionRepository.findOne(id)
+  if (!findQuestion) {
+    throw APINotFoundError
   }
+  if (findQuestion.userId === null) {
+    throw NoDataError
+  }
+
+  return findQuestion
 }
 
-export default RetrieveQuestionService
+export default retrieveQuestion

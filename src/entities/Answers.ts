@@ -7,9 +7,8 @@ import {
   ManyToOne
 } from 'typeorm'
 import { Questions } from './Questions'
-import { Users } from './Users'
 
-@Entity('answers', { schema: 'typeorm-practice' })
+@Entity('answer', { schema: 'typeorm-practice' })
 export class Answers {
   @PrimaryGeneratedColumn('uuid')
   id: string
@@ -17,8 +16,13 @@ export class Answers {
   @ManyToOne((type) => Questions, (question) => question.answers)
   question: Questions
 
-  @ManyToOne((type) => Users, (user) => user.answers)
-  user: Users
+  @Column('varchar', {
+    name: 'user_id',
+    nullable: false,
+    comment: '유저 아이디',
+    length: 200
+  })
+  userId: string
 
   @Column('varchar', {
     name: 'content_url',

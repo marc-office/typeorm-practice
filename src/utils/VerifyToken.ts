@@ -1,8 +1,8 @@
-import jwt from 'jsonwebtoken'
-import jwkToPem from 'jwk-to-pem'
+import * as jwkToPem from 'jwk-to-pem'
 import axios from 'axios'
 const userPoolId = process.env.COGNITO_POOL_ID
 const poolRegion = 'ap-northeast-2'
+const jwt = require('jsonwebtoken')
 
 /**
  * cognito token 검증
@@ -43,10 +43,10 @@ export const validateToken = async (token: string) => {
     return await new Promise<boolean | string[]>((resolve) =>
       jwt.verify(token, pem1, function (err: any, payload: any) {
         if (err) {
-          console.log('Invalid Token.')
+          console.log(err)
           resolve(false)
         }
-        resolve(payload['cognito:groups'] as string[])
+        resolve(payload)
       })
     )
   } else {

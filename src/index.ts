@@ -1,5 +1,4 @@
 import 'reflect-metadata'
-import { createConnection } from 'typeorm'
 import * as express from 'express'
 import * as compression from 'compression'
 // import * as cors from 'cors';
@@ -8,15 +7,8 @@ import 'dotenv/config'
 
 import v1 from '@/router/v1/Index'
 
-// Connect typeORM mysql
-createConnection()
-  .then(() => {
-    console.log('Database Connected :)')
-  })
-  .catch((error) => console.log(error))
-
-// Create express server
 const app = express()
+const path = require('path')
 
 // middlewares
 app.set('port', process.env.PORT || 3000)
@@ -31,6 +23,8 @@ app.use(morgan('dev'))
 //     credentials: true,
 //   }),
 // );
+
+app.use(express.static(path.join(__dirname, 'public')))
 
 // Routes
 app.use('/v1', v1)

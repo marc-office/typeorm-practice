@@ -6,19 +6,17 @@ interface FormatData {
   questionsLength: number
 }
 
-class ListQuestionsService {
-  async execute (questionsLength: number): Promise<FormatData> {
-    const questionRepository = getRepository(Questions)
+const listQuestions = async (questionsLength: number): Promise<FormatData> => {
+  const questionRepository = getRepository(Questions)
 
-    const questions = await questionRepository.find()
+  const questions = await questionRepository.find()
 
-    questionsLength = questions.length
+  questionsLength = questions.length
 
-    return {
-      questions,
-      questionsLength
-    }
+  return {
+    questions,
+    questionsLength
   }
 }
 
-export default ListQuestionsService
+export default listQuestions

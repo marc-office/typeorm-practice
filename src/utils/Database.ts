@@ -7,7 +7,9 @@ import {
 } from 'typeorm'
 import { SnakeNamingStrategy } from 'typeorm-snake-naming-strategy'
 
-import { Users } from '@/entities/Users'
+// import { Users } from '@/entities/Users'
+import { Questions } from '@/entities/Questions'
+import { Answers } from '@/entities/Answers'
 
 const connectionManager = getConnectionManager()
 
@@ -39,10 +41,12 @@ export const getConnection = async () => {
       bigNumberStrings: false,
       namingStrategy: new SnakeNamingStrategy(),
       charset: 'utf8mb4_unicode_ci',
-      entities: [Users]
+      entities: [Questions, Answers],
+      synchronize: true
     }
 
     connection = await createConnection(connectionOptions)
+    console.log('Database connected!')
     if (!connection.isConnected) {
       connection = await connection.connect()
     }

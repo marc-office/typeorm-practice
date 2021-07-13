@@ -21,9 +21,7 @@
     // 절대경로 중 src 경로를 추가
     "paths": {
       "@/*": ["src/*"]
-    },
-    // 인증이 필요한 요청에 미들웨어 사용을 위해 커스텀 request type 사용
-    "typeRoots": ["./node_modules/@types", "./src/types/Express.d.ts"]
+    }
   },
   // 어디에 있는 파일을 컴파일 할 것인지
   "include": ["src/**/*"],

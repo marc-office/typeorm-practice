@@ -4,34 +4,55 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany
+  OneToOne
 } from 'typeorm'
 import { Answers } from './Answers'
 
-@Entity('question', { schema: 'typeorm-practice' })
-export class Questions {
+@Entity('file', { schema: 'typeorm-practice' })
+export class Files {
   @PrimaryGeneratedColumn('uuid')
-  id: string
+  uuid: string
+
+  @OneToOne((type) => Answers, (answer) => answer.contentUrl)
+  answer: Answers
 
   @Column('varchar', {
-    name: 'user_id',
+    name: 'userId',
     nullable: false,
     comment: '유저 아이디',
-    length: 200,
-    default: 'uuid-default-value'
+    length: 200
   })
   userId: string
 
-  @OneToMany((type) => Answers, (answer) => answer.question)
-  answers: Answers
-
   @Column('varchar', {
-    name: 'content',
+    name: 'name',
     nullable: false,
-    comment: '질문 내용',
+    comment: '이미지 이름',
     length: 200
   })
-  content: string
+  name: string
+
+  @Column('int', {
+    name: 'size',
+    nullable: false,
+    comment: '이미지 크기'
+  })
+  size: number
+
+  @Column('varchar', {
+    name: 'path',
+    nullable: false,
+    comment: '이미지 경로'
+  })
+  path: string
+
+  @Column('varchar', {
+    name: 'mine_type',
+    nullable: false,
+    comment: '데이터 타입',
+    length: 200
+  })
+  mineType: string
 
   @CreateDateColumn({
     type: 'timestamp',

@@ -3,6 +3,7 @@ import RouterWrapper from 'src/utils/RouterWrapper'
 import * as AwsConfig from '@/utils/AwsConfig'
 import { getCognito } from 'src/utils/Cognito'
 import { AWSonFailure } from '@/types/Error/Index'
+import { ensureAuthenticated } from '@/middlewares/EnsureAuthenticated'
 
 const authRouter = Router()
 
@@ -78,5 +79,9 @@ authRouter.post(
     })
   })
 )
+
+authRouter.post('/ensureAuthenticated', ensureAuthenticated, (req, res) => {
+  res.send('authenticated')
+})
 
 export default authRouter

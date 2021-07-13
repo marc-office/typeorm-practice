@@ -1,23 +1,16 @@
 import { NextFunction, Request, Response } from 'express'
+import { validateToken } from '@/utils/VerifyToken'
 
-export default function ensureAuthenticated (
-  request: Request,
-  response: Response,
+export const ensureAuthenticated = async (
+  req: Request,
+  res: Response,
   next: NextFunction
-): void {
-  const authHeader = request.headers.authorization
-
-  if (!authHeader) {
-    throw new Error('권한이 부족합니다.')
-  }
-
-  const [, token] = authHeader.split(' ')
-
-  try {
-    // TODO : Check cognito user token authentication here
-
-    return next()
-  } catch {
-    throw new Error('유효하지 않은 토큰 값입니다.')
-  }
+) => {
+  const token = req.headers.authorization
+  console.log(token)
+  if (token) token.toString()
+  const data = await validateToken(token)
+  console.log(data)
+  res.locals.user = data
+  return next()
 }

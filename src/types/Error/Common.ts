@@ -23,7 +23,7 @@ export const UnauthorizedResource: ICommonError = {
   message: { ko: '해당 리소스에 대한 권한이 없습니다.' }
 }
 
-export const ValidationError: ICommonError = {
+export const FileValidationError: ICommonError = {
   status: 400,
   code: 'Common-005',
   message: { ko: '잘못된 파일을 요청하였습니다.' }

@@ -1,10 +1,10 @@
 import { Answers } from '@/entities/Answers'
-import getRepository from 'typeorm'
+import { getRepository } from 'typeorm'
 
-export const deleteAnswer = async (questionId) => {
+export const deleteAnswer = async (answerId) => {
   const answerRepository = getRepository(Answers)
   const deleted = await answerRepository.delete({
-    questionId: questionId
+    id: answerId
   })
 
   return deleted

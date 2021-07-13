@@ -53,20 +53,26 @@ answerRouter.post(
   })
 )
 
-answerRouter.put('/', RouterWrapper(async (req, res, next) => {
+answerRouter.get(
+  '/',
+  RouterWrapper(async (req, res, next) => {
     const { id } = req.body as {
       id: string
     }
     const answer = retrieveAnswer(id)
     return res.status(200).json(answer)
-})
+  })
+)
 
 answerRouter.get('/:id', (req, res) => {
   console.log(req.params)
 })
 
 answerRouter.put('/:id', (req, res) => {
-  console.log(req.params)
+  // 1. findAnswerById
+  // 2. getImagePath from the answer object
+  // 3. put image? or delete image and create image
+  // 4. assign image path to the answer object to be updated
 })
 
 export default answerRouter

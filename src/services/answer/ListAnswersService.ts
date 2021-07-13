@@ -1,9 +1,9 @@
 import { Answers } from '@/entities/Answers'
-import getRepository from 'typeorm'
+import { getRepository } from 'typeorm'
 
-export const listAnswers = async (questionId) => {
+export const listAnswers = async () => {
   const answerRepository = getRepository(Answers)
-  const createdAnswer = await answerRepository.find(questionId)
+  const answers = await answerRepository.find()
 
-  return createdAnswer
+  return answers
 }

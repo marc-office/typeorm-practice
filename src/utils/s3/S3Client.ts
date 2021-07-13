@@ -2,7 +2,6 @@ import { S3Client } from '@aws-sdk/client-s3'
 
 const { getDefaultRoleAssumerWithWebIdentity } = require('@aws-sdk/client-sts')
 const { defaultProvider } = require('@aws-sdk/credential-provider-node')
-// const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3')
 
 const provider = defaultProvider({
   roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity
@@ -14,4 +13,7 @@ const s3Client = new S3Client({
   region: REGION,
   credentialDefaultProvider: provider
 })
-export { s3Client }
+
+const staticHostingURL =
+  'http://webmodule-dungdung.s3-website.ap-northeast-2.amazonaws.com'
+export { s3Client, staticHostingURL }

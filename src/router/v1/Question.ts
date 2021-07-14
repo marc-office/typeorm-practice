@@ -5,8 +5,10 @@ import { questionSize } from '@/utils/Common'
 import createQuestion from '@/services/question/CreateQuestionService'
 import listQuestions from '@/services/question/ListQuestionsService'
 import retrieveQuestion from '@/services/question/RetrieveQuestionService'
-import updateQuestion from '@/services/question/UpdateQuestionService'
+import { updateQuestion } from '@/services/question/UpdateQuestionService'
 import { deleteQuestion } from '@/services/question/DeleteQuestionService'
+import { Questions } from '@/entities/Questions'
+import { getRepository } from 'typeorm'
 
 // interface IDeleteQuestion {
 //   id: string
@@ -14,6 +16,17 @@ import { deleteQuestion } from '@/services/question/DeleteQuestionService'
 // }
 
 const questionRouter = Router()
+
+questionRouter.post('/questionTest', async (req, res) => {
+  const questionRepository = getRepository(Questions)
+  const question = await questionRepository.create({
+    content: 'this is test content'
+  })
+
+  await questionRepository.save(question)
+
+  return res.status(200).json(question)
+})
 
 /*
 Create, Delete, Update 작업에는 모두 cognito-user-token 필요하므로,
@@ -40,12 +53,6 @@ questionRouter.post(
     const { content } = req.body as unknown as {
       content: string
     }
-    // createQuestionService
-    //   .execute({
-    //     userId: user.id,
-    //     content: content
-    //   })
-    //   .then((data) => (created = data))
     const question = await createQuestion({
       userId: res.locals.user.username,
       content: content
@@ -147,8 +154,8 @@ questionRouter.delete(
     }
 
     await deleteQuestion({
-      id: id,
-      userId: userId.toString()
+      userId: userId,
+      id: id
     })
     return res.status(204).json({
       message: '질문이 삭제되었습니다.'

@@ -1,5 +1,6 @@
 import * as jwkToPem from 'jwk-to-pem'
 import axios from 'axios'
+import { JWTDecodingError } from '@/types/Error/Auth'
 const userPoolId = process.env.COGNITO_POOL_ID
 const poolRegion = 'ap-northeast-2'
 const jwt = require('jsonwebtoken')
@@ -27,10 +28,11 @@ export const validateToken = async (token: string) => {
       pems[keyId] = pem
     }
     // validate the token
+
     const decodedJwt = jwt.decode(token, { complete: true })
     if (!decodedJwt) {
       console.log('Not a valid JWT token')
-      return false
+      throw JWTDecodingError
     }
 
     const kid = decodedJwt.header.kid

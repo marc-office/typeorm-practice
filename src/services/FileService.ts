@@ -7,7 +7,7 @@ interface FileInfo {
   name: string
   size: number
   path: string
-  mineType: string
+  mimeType: string
 }
 
 export const createFile = async (fileInfo: FileInfo): Promise<Files> => {
@@ -18,8 +18,9 @@ export const createFile = async (fileInfo: FileInfo): Promise<Files> => {
     name: fileInfo.name,
     size: fileInfo.size,
     path: fileInfo.path,
-    mineType: fileInfo.mineType
+    mimeType: fileInfo.mimeType
   })
+  await fileRepository.save(createdFile)
 
   return createdFile
 }

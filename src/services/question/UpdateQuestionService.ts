@@ -19,8 +19,8 @@ const updateQuestion = async ({
   if (!findQuestion) {
     throw NoDataError
   }
-  console.log(userId)
-  console.log(findQuestion.userId)
+  // console.log(userId)
+  // console.log(findQuestion.userId)
   if (findQuestion.userId !== userId) {
     throw UnauthorizedResource
   }
@@ -36,4 +36,23 @@ const updateQuestion = async ({
   // field validation error?
 }
 
-export default updateQuestion
+const saveQuestionAnswer = async ({
+  id,
+  answer
+}): Promise<Questions | void> => {
+  const questionRepository = getRepository(Questions)
+  const findQuestion = await questionRepository.findOne(id)
+  if (!findQuestion) {
+    console.log('here')
+    throw NoDataError
+  }
+
+  findQuestion.answers = []
+  findQuestion.answers.push(answer)
+  const updateQuestion = await questionRepository.save(findQuestion)
+
+  return updateQuestion
+  // field validation error?
+}
+
+export { updateQuestion, saveQuestionAnswer }

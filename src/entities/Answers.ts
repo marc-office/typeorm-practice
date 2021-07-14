@@ -4,8 +4,11 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne
+  ManyToOne,
+  OneToOne,
+  JoinColumn
 } from 'typeorm'
+import { Files } from './Files'
 import { Questions } from './Questions'
 
 @Entity('answer', { schema: 'typeorm-practice' })
@@ -20,7 +23,8 @@ export class Answers {
     name: 'user_id',
     nullable: false,
     comment: '유저 아이디',
-    length: 200
+    length: 200,
+    default: 'uuid-default-value'
   })
   userId: string
 
@@ -31,6 +35,12 @@ export class Answers {
     length: 200
   })
   contentUrl: string
+
+  @OneToOne((type) => Files, (file) => file.answer, {
+    cascade: true
+  })
+  @JoinColumn()
+  file: Files
 
   @CreateDateColumn({
     type: 'timestamp',

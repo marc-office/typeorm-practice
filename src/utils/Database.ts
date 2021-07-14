@@ -7,9 +7,9 @@ import {
 } from 'typeorm'
 import { SnakeNamingStrategy } from 'typeorm-snake-naming-strategy'
 
-// import { Users } from '@/entities/Users'
 import { Questions } from '@/entities/Questions'
 import { Answers } from '@/entities/Answers'
+import { Files } from '@/entities/Files'
 
 const connectionManager = getConnectionManager()
 
@@ -41,7 +41,7 @@ export const getConnection = async () => {
       bigNumberStrings: false,
       namingStrategy: new SnakeNamingStrategy(),
       charset: 'utf8mb4_unicode_ci',
-      entities: [Questions, Answers],
+      entities: [Questions, Answers, Files],
       synchronize: true
     }
 

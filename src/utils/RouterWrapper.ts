@@ -34,6 +34,11 @@ export default (
               code: instanceName,
               message: 'Data Not Found'
             })
+          case 'JWTInvalidError':
+            return res.status(404).json({
+              code: instanceName,
+              message: 'JWT expired'
+            })
         }
 
         return res.status(400).json({

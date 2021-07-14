@@ -14,12 +14,14 @@ const deleteQuestion = async ({ userId, id }: Request): Promise<Boolean> => {
     id: id
   })
 
-  if (userId !== question.userId) {
-    throw UnauthorizedResource
-  }
+  console.log(question)
 
   if (!question) {
     throw NoDataError
+  }
+
+  if (question && userId !== question.userId) {
+    throw UnauthorizedResource
   }
 
   const result = await questionsRepository.remove(question)

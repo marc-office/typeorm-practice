@@ -14,6 +14,4 @@ const s3Client = new S3Client({
   credentialDefaultProvider: provider
 })
 
-const staticHostingURL =
-  'http://webmodule-dungdung.s3-website.ap-northeast-2.amazonaws.com'
-export { s3Client, staticHostingURL }
+export { s3Client }

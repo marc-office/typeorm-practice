@@ -4,7 +4,8 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany
+  OneToMany,
+  JoinTable
 } from 'typeorm'
 import { Answers } from './Answers'
 
@@ -22,8 +23,11 @@ export class Questions {
   })
   userId: string
 
-  @OneToMany((type) => Answers, (answer) => answer.question)
-  answers: Answers
+  @OneToMany((type) => Answers, (answer) => answer.question, {
+    cascade: true
+  })
+  @JoinTable()
+  answers: Answers[]
 
   @Column('varchar', {
     name: 'content',

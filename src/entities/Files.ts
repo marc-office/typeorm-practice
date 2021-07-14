@@ -13,14 +13,15 @@ export class Files {
   @PrimaryGeneratedColumn('uuid')
   uuid: string
 
-  @OneToOne((type) => Answers, (answer) => answer.contentUrl)
+  @OneToOne((type) => Answers, (answer) => answer.file)
   answer: Answers
 
   @Column('varchar', {
     name: 'userId',
     nullable: false,
     comment: '유저 아이디',
-    length: 200
+    length: 200,
+    default: 'default'
   })
   userId: string
 
@@ -52,7 +53,7 @@ export class Files {
     comment: '데이터 타입',
     length: 200
   })
-  mineType: string
+  mimeType: string
 
   @CreateDateColumn({
     type: 'timestamp',

@@ -9,31 +9,29 @@ import { bucketName } from '@/utils/Common'
 import { createAnswer } from '@/services/answer/CreateAnswerService'
 import { FileValidationError } from '@/types/Error/Common'
 import { createFile } from '@/services/FileService'
-import { ensureAuthenticated } from '@/middlewares/EnsureAuthenticated'
+import {
+  ensureAuthenticated,
+  ensureAuthenticated
+} from '@/middlewares/EnsureAuthenticated'
 import { deleteAnswer } from '@/services/answer/DeleteAnswerService'
-import retrieveQuestion from '@/services/question/RetrieveQuestionService'
 import { updateAnswerFile } from '@/services/answer/UpdateAnswerService'
 import { saveQuestionAnswer } from '@/services/question/UpdateQuestionService'
 import { getRepository } from 'typeorm'
 import { Answers } from '@/entities/Answers'
+import { listAnswers } from '@/services/answer/ListAnswersService'
+import { S3Error } from '@/types/Error/S3'
 
 const answerRouter = Router()
 
-// answerRouter.post('/:id', upload.single('photo'), (req, res) => {
-//   console.log(req.params)
-//   console.log(req.file)
+// answerRouter.post('/answerTest', async (req, res) => {
+//   const answerRepository = getRepository(Answers)
+//   await answerRepository.create({
+//     userId: res.locals.userId,
+//     contentUrl: 'this is content url'
+//   })
+
 //   return res.send('hello')
 // })
-
-answerRouter.post('/answerTest', async (req, res) => {
-  const answerRepository = getRepository(Answers)
-  await answerRepository.create({
-    userId: res.locals.userId,
-    contentUrl: 'this is content url'
-  })
-
-  return res.send('hello')
-})
 
 /*
   Create answer
@@ -51,8 +49,8 @@ answerRouter.post(
     const _uuid = uuid()
     const key = _uuid + '.' + ext
     const params = {
-      Bucket: bucketName, // The name of the bucket. For example, 'sample_bucket_101'.
-      Key: key, // The name of the object. For example, 'sample_upload.txt'.
+      Bucket: bucketName,
+      Key: key,
       Body: req.file.buffer
     }
 
@@ -79,19 +77,10 @@ answerRouter.post(
       createdFile.path
     ) // not saved yet
 
-    const updatedQuestion = await saveQuestionAnswer({
+    await saveQuestionAnswer({
       id: questionId,
       answer: answer
     })
-
-    // const answerRepository = getRepository(Answers)
-    // answerRepository.save(answer)
-
-    // createdFile.answer = answer
-    // answer.file = createdFile
-
-    // const question = await retrieveQuestion(questionId)
-    // question.answers = answer
 
     await updateAnswerFile(answer.id, createdFile)
 
@@ -105,10 +94,10 @@ answerRouter.post(
 answerRouter.get(
   '/',
   RouterWrapper(async (req, res, next) => {
-    const { id } = req.body as {
-      id: string
+    const { questionId } = req.body as {
+      questionId: string
     }
-    const answer = await retrieveAnswer(id)
+    const answer = await listAnswers(questionId)
     return res.status(200).json(answer)
   })
 )
@@ -129,24 +118,46 @@ answerRouter.get(
 /*
   Update answer
 */
-answerRouter.put('/:id', (req, res) => {
-  // 1. findAnswerById
-  // 2. getImagePath from the answer object
-  // 3. put image? or delete image and create image
-  // 4. assign image path to the answer object to be updated
-})
+answerRouter.put(
+  '/:id',
+  ensureAuthenticated,
+  upload.single('photo'),
+  RouterWrapper(async (req, res) => {
+    // 1. findAnswerById
+    const answerId = req.params.id
+    const findAnswer = await retrieveAnswer(req.params.id)
+    // 2. getImagePath from the answer object
+    const key = findAnswer.contentUrl
+    // 3  delete image and create image
+    const deleted = await deleteObject(deleteParams)
+    if (!deleted) {
+      throw S3Error
+    }
+    const uploaded = await putObject(uploadParams)
+    if (!uploaded) {
+      throw S3Error
+    }
+
+    // 4. assign image path to the answer object to be updated
+    const file = await createFile(fileInfo)
+    findAnswer.file = file
+    updateAnswerFile(answerId, file)
+  })
+)
 
 /*
   Delete answer
  */
 answerRouter.delete(
   '/:id',
+  ensureAuthenticated,
   RouterWrapper(async (req, res, next) => {
     const answerId = req.params.id
-    await deleteAnswer(answerId)
+    console.log('current User ID is: ' + res.locals.userId)
+    await deleteAnswer(answerId, res.locals.userId)
 
-    return res.status(204).json({
-      message: 'successfully deleted answer'
+    return res.status(200).json({
+      message: '답변을 성공적으로 삭제하였습니다'
     })
   })
 )

@@ -5,6 +5,9 @@ const userPoolId = process.env.COGNITO_POOL_ID
 const poolRegion = 'ap-northeast-2'
 const jwt = require('jsonwebtoken')
 
+interface decodedJwtFormat {
+  sub: string
+}
 /**
  * cognito token 검증
  * @param token 대상 토큰
@@ -33,16 +36,20 @@ export const validateToken = async (token: string) => {
     if (!decodedJwt) {
       console.log('Not a valid JWT token')
       throw JWTDecodingError
+
+      // TODO: refactor all errors throwing into EnsureAuthenticated.ts file.
     }
 
     const kid = decodedJwt.header.kid
     const pem1 = pems[kid]
     if (!pem1) {
+      // 잘못된 토큰 문자열인 경우
       console.log('Invalid token')
       return false
     }
 
-    return await new Promise<boolean | string[]>((resolve) =>
+    // 토큰이 만료된 경우 false 리턴
+    return await new Promise<boolean | decodedJwtFormat>((resolve) =>
       jwt.verify(token, pem1, function (err: any, payload: any) {
         if (err) {
           console.log(err)

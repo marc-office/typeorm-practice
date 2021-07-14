@@ -48,7 +48,7 @@ export class Files {
   path: string
 
   @Column('varchar', {
-    name: 'mine_type',
+    name: 'mime_type',
     nullable: false,
     comment: '데이터 타입',
     length: 200

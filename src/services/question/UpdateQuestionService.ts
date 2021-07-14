@@ -41,13 +41,15 @@ const saveQuestionAnswer = async ({
   answer
 }): Promise<Questions | void> => {
   const questionRepository = getRepository(Questions)
-  const findQuestion = await questionRepository.findOne(id)
+  const findQuestion = await questionRepository.findOne(id, {
+    relations: ['answers']
+  })
   if (!findQuestion) {
     console.log('here')
     throw NoDataError
   }
 
-  findQuestion.answers = []
+  // findQuestion.answers = []
   findQuestion.answers.push(answer)
   const updateQuestion = await questionRepository.save(findQuestion)
 

@@ -4,7 +4,9 @@ import { getRepository } from 'typeorm'
 
 export const retrieveAnswer = async (id: string): Promise<Answers> => {
   const answerRepository = getRepository(Answers)
-  const findAnswer = await answerRepository.findOne(id)
+  const findAnswer = await answerRepository.findOne(id, {
+    relations: ['question']
+  })
 
   if (!findAnswer) {
     throw NoDataError
